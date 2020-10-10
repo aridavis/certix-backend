@@ -19,18 +19,9 @@ class SellerController extends Controller
      */
     public function index()
     {
-        //
+        return Seller::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -71,20 +62,9 @@ class SellerController extends Controller
      * @param \App\Seller $seller
      * @return \Illuminate\Http\Response
      */
-    public function show(Seller $seller)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Seller $seller
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Seller $seller)
-    {
-        //
+        return Seller::find($id);
     }
 
     /**
@@ -94,9 +74,12 @@ class SellerController extends Controller
      * @param \App\Seller $seller
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Seller $seller)
+    public function update(Request $request, $id)
     {
-        //
+        $seller = Seller::find($id);
+        $seller->information = $request->has('information') ? $request->information : "";
+        $seller->save();
+        return $seller;
     }
 
     /**

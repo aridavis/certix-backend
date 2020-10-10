@@ -17,6 +17,7 @@ class CreateSellersTable extends Migration
             $table->string('id')->primary();
             $table->string('name')->unique();
             $table->string('ic_number')->unique();
+            $table->string('information')->nullable();
             $table->string('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

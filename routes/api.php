@@ -26,8 +26,10 @@ Route::middleware('auth:api')->group(function (){
 
     Route::prefix('sellers')->group(function (){
         Route::post('/', 'SellerController@store');
+        Route::get('/', 'SellerController@index');
+        Route::get('/{id}', 'SellerController@show');
+        Route::put('/{id}', 'SellerController@update');
     });
-
 
 
 });
