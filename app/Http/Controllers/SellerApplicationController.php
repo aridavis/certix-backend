@@ -62,6 +62,9 @@ class SellerApplicationController extends Controller
         $data->description = $request->description;
         $data->status_id = Status::findStatusByName('requested')->id;
         $data->save();
+
+
+
         return  $data;
     }
 
@@ -78,6 +81,12 @@ class SellerApplicationController extends Controller
         $data = SellerApplication::find($id);
         $data->status_id = Status::findStatusByName($request->status)->id;
         $data->save();
+
+        if($data->status_id == Status::findStatusByName("accepted")->id){
+            $sellerController = new SellerController();
+            $sellerController->store($data);
+        }
+
         return $data;
     }
 }

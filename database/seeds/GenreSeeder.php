@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class StatusSeeder extends Seeder
+class GenreSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,11 +15,12 @@ class StatusSeeder extends Seeder
     }
 
     private function initiateData(){
-        $data = ["Requested", "Accepted", "Rejected", "Scheduled", "Cancelled"];
+        $data = ["Alternative", "Anime", "Blues", "Children", "Classical", "Country", "Jazz", "Dance", "Rock", "Pop"];
+
         foreach ($data as $d){
-            $status = new \App\Status();
-            $status->name = $d;
-            $status->save();
+            $genre = new \App\Genre();
+            $genre->name = $d;
+            $genre->save();
         }
     }
 }

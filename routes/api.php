@@ -25,10 +25,26 @@ Route::middleware('auth:api')->group(function (){
     });
 
     Route::prefix('sellers')->group(function (){
-        Route::post('/', 'SellerController@store');
+
         Route::get('/', 'SellerController@index');
         Route::get('/{id}', 'SellerController@show');
         Route::put('/{id}', 'SellerController@update');
+    });
+
+    Route::prefix('concerts')->group(function(){
+        Route::post('/', 'ConcertController@store');
+        Route::get('/', 'ConcertController@index');
+        Route::get('/{id}', 'ConcertController@show');
+        Route::put('/{id}', 'ConcertController@update');
+    });
+
+    Route::prefix('tickets')->group(function(){
+        Route::post('/', 'TicketController@store');
+        Route::get('/', 'TicketController@index');
+    });
+
+    Route::prefix('reviews')->group(function(){
+        Route::post('/', 'ReviewController@store');
     });
 
 

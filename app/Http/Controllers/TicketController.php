@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Ticket;
+use App\TicketDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Webpatser\Uuid\Uuid;
 
 class TicketController extends Controller
 {
@@ -12,20 +15,16 @@ class TicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Ticket::where('user_id', '=', $request->user()->id)->with('ticketDetail')->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        return Ticket::find($id);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -35,21 +34,30 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = new Ticket();
+        $data->id = Uuid::generate()->string;
+        $data->user_id = $request->user()->id;
+        $data->concert_id = $request->concert_id;
+        $data->save();
+
+        $details = [];
+
+        for($i = 0; $i < intval($request->quantity); $i++){
+            $detail = new TicketDetail();
+            $detail->id = Uuid::generate()->string;
+            $detail->ticket_id = $data->id;
+            $detail->token = strtoupper(Str::random(6));
+            $detail->cookie = "";
+            $detail->is_watching = false;
+            $detail->save();
+
+            array_push($details, $detail);
+        }
+
+        return ["ticket" => $data, "details"=> $details];
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Ticket $ticket)
-    {
-        //
-    }
-
-    /**
+        /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Ticket  $ticket
@@ -67,9 +75,9 @@ class TicketController extends Controller
      * @param  \App\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update($tokenId)
     {
-        //
+
     }
 
     /**

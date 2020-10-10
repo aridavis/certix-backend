@@ -11,10 +11,15 @@ class ReviewTypeSeeder extends Seeder
      */
     public function run()
     {
-
+        $this->initiateData();
     }
 
     public function initiateData(){
-
+        $data = ["ABC", "DEF", "EGH", "IJK"];
+        foreach ($data as $d){
+            $type = new \App\ReviewType();
+            $type->name = $d;
+            $type->save();
+        }
     }
 }

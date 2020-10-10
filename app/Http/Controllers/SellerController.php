@@ -29,23 +29,8 @@ class SellerController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($application)
     {
-        $validator = Validator::make($request->all(), [
-            "application_id" => ['required', Rule::exists('seller_applications','id')->where('status_id', 2)],
-        ]);
-
-        if ($validator->fails()) {
-            return CustomResponse::ErrorResponse($validator->errors());
-        }
-
-        $application = SellerApplication::find($request->application_id);
-
-        $seller = Seller::findSellerByUserId($application->user_id);
-
-        if ($seller != null) {
-            return CustomResponse::ErrorResponse(["user_id", ["user has been added as seller"]]);
-        }
 
         $data = new Seller();
         $data->id = Uuid::generate()->string;
@@ -53,7 +38,7 @@ class SellerController extends Controller
         $data->ic_number = $application->ic_number;
         $data->name = $application->name;
         $data->save();
-        return $data;
+
     }
 
     /**

@@ -14,7 +14,7 @@ class CreateReviewsTable extends Migration
     public function up()
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->string('id');
+            $table->string('id')->primary();
             $table->integer('star');
             $table->string('ticket_detail_id');
             $table->foreign('ticket_detail_id')->on('ticket_details')->references('id')->onUpdate('cascade')->onDelete('cascade');
