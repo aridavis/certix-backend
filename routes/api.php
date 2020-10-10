@@ -24,6 +24,10 @@ Route::middleware('auth:api')->group(function (){
         Route::put('{id}', 'SellerApplicationController@update');
     });
 
+    Route::prefix('sellers')->group(function (){
+        Route::post('/', 'SellerController@store');
+    });
+
 
 
 });

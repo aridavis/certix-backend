@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomResponse;
 use App\Seller;
+use App\SellerApplication;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Webpatser\Uuid\Uuid;
 
 class SellerController extends Controller
 {
@@ -30,18 +35,40 @@ class SellerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "application_id" => ['required', Rule::exists('seller_applications','id')->where('status_id', 2)],
+        ]);
+
+        if ($validator->fails()) {
+            return CustomResponse::ErrorResponse($validator->errors());
+        }
+
+        $application = SellerApplication::find($request->application_id);
+
+        $seller = Seller::findSellerByUserId($application->user_id);
+
+        if ($seller != null) {
+            return CustomResponse::ErrorResponse(["user_id", ["user has been added as seller"]]);
+        }
+
+        $data = new Seller();
+        $data->id = Uuid::generate()->string;
+        $data->user_id = $application->user_id;
+        $data->ic_number = $application->ic_number;
+        $data->name = $application->name;
+        $data->save();
+        return $data;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Seller  $seller
+     * @param \App\Seller $seller
      * @return \Illuminate\Http\Response
      */
     public function show(Seller $seller)
@@ -52,7 +79,7 @@ class SellerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Seller  $seller
+     * @param \App\Seller $seller
      * @return \Illuminate\Http\Response
      */
     public function edit(Seller $seller)
@@ -63,8 +90,8 @@ class SellerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Seller  $seller
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Seller $seller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Seller $seller)
@@ -75,7 +102,7 @@ class SellerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Seller  $seller
+     * @param \App\Seller $seller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Seller $seller)
