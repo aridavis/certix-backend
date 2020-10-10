@@ -9,6 +9,10 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
+
+    protected $keyType = "string";
+    public $incrementing = false;
+
     use Notifiable, HasApiTokens;
 
     /**
