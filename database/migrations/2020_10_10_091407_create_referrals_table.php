@@ -15,8 +15,10 @@ class CreateReferralsTable extends Migration
     {
         Schema::create('referrals', function (Blueprint $table) {
             $table->string('id');
-            $table->string('ticket_id');
-            $table->string('seller_id');
+            $table->string('user_id');
+            $table->string('concert_id');
+            $table->foreign('user_id')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('concert_id')->on('concerts')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

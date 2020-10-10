@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Concert;
 use App\Referral;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class ReferralController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -44,9 +45,9 @@ class ReferralController extends Controller
      * @param  \App\Referral  $referral
      * @return \Illuminate\Http\Response
      */
-    public function show(Referral $referral)
+    public function show($id)
     {
-        //
+        return Concert::findConcertById(Referral::getConcertId($id));
     }
 
     /**

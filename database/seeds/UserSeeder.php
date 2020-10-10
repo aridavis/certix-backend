@@ -30,5 +30,19 @@ class UserSeeder extends Seeder
 
         \Illuminate\Support\Facades\DB::table('users')->insert($data);
 
+        $data = [
+            "id" => \Webpatser\Uuid\Uuid::generate()->string,
+            "name" => 'Kevin',
+            "password" => bcrypt("kevin"),
+            "email" => "kv@kv.com",
+            "dob" => "2000-10-10",
+            "phone_number" => "082296516272",
+            "gender" => "M",
+            "created_at" => \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ];
+
+        \Illuminate\Support\Facades\DB::table('users')->insert($data);
+
     }
 }

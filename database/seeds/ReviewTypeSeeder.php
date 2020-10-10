@@ -15,7 +15,7 @@ class ReviewTypeSeeder extends Seeder
     }
 
     public function initiateData(){
-        $data = ["ABC", "DEF", "EGH", "IJK"];
+        $data = ["Interesting Content", "", "EGH", "IJK"];
         foreach ($data as $d){
             $type = new \App\ReviewType();
             $type->name = $d;

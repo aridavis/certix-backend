@@ -21,7 +21,7 @@ class CreateConcertsTable extends Migration
             $table->unsignedBigInteger('price');
             $table->unsignedBigInteger('genre_id');
             $table->foreign('genre_id')->references('id')->on('genres')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('video_url')->nullable();
+            $table->string('stream_key')->nullable();
             $table->unsignedBigInteger('status_id');
             $table->foreign('status_id')->on('statuses')->references('id')->onUpdate('cascade')->onDelete('cascade');
 

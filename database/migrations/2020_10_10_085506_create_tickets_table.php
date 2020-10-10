@@ -17,6 +17,7 @@ class CreateTicketsTable extends Migration
             $table->string('id')->primary();
             $table->string('user_id');
             $table->string('concert_id');
+            $table->string('referral_id')->nullable(true);
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('concert_id')->references('id')->on('concerts')->onUpdate('cascade')->onDelete('cascade');
 

@@ -57,3 +57,7 @@ Route::prefix('auth')->group(function(){
 Route::prefix('users')->group(function(){
     Route::post('register', 'UserController@register');
 });
+
+Route::prefix('referral')->group(function(){
+    Route::get('/{id}', 'ReferralController@index');
+});

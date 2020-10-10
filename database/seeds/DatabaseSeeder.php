@@ -15,5 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StatusSeeder::class);
         $this->call(GenreSeeder::class);
         $this->call(ReviewTypeSeeder::class);
+        $this->call(SellerSeeder::class);
+        $this->call(ConcertSeeder::class);
     }
 }
