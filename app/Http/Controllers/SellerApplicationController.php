@@ -22,7 +22,7 @@ class SellerApplicationController extends Controller
      */
     public function index()
     {
-        //
+        return SellerApplication::all();
     }
 
     /**
@@ -34,7 +34,7 @@ class SellerApplicationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "name" => 'required|unique:seller_applications,name|unique:sellers,name',
+            "name" => 'required|unique:seller_applications,name,3,status_id|unique:sellers,name',
             "ic_number" => 'required',
             "description" => 'required'
         ]);
@@ -65,48 +65,19 @@ class SellerApplicationController extends Controller
         return  $data;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\SellerApplication  $sellerApplication
-     * @return \Illuminate\Http\Response
-     */
-    public function show(SellerApplication $sellerApplication)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\SellerApplication  $sellerApplication
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(SellerApplication $sellerApplication)
-    {
-        //
-    }
+    public function update(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            "status" => 'required|exists:statuses,name'
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SellerApplication  $sellerApplication
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, SellerApplication $sellerApplication)
-    {
-        //
-    }
+        if($validator->fails()){
+            return CustomResponse::ErrorResponse($validator->errors());
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\SellerApplication  $sellerApplication
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(SellerApplication $sellerApplication)
-    {
-        //
+        $data = SellerApplication::find($id);
+        $data->status_id = Status::findStatusByName($request->status)->id;
+        $data->save();
+        return $data;
     }
 }

@@ -18,7 +18,13 @@ Route::middleware('auth:api')->group(function (){
     Route::put('users', 'UserController@update');
     Route::post('auth/logout', 'AuthController@logout');
 
-    Route::post('seller/application', 'SellerApplicationController@store');
+    Route::prefix('seller/application')->group(function(){
+        Route::get('', 'SellerApplicationController@index');
+        Route::post('', 'SellerApplicationController@store');
+        Route::put('{id}', 'SellerApplicationController@update');
+    });
+
+
 
 });
 
