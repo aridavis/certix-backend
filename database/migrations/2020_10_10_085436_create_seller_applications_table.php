@@ -14,7 +14,15 @@ class CreateSellerApplicationsTable extends Migration
     public function up()
     {
         Schema::create('seller_applications', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
+            $table->string('user_id');
+            $table->string('name');
+            $table->string('ic_number');
+            $table->string('description');
+            $table->unsignedBigInteger('status_id');
+            $table->foreign('status_id')->on('statuses')->references('id')->onUpdate('cascade')->onDelete('cascade');
+
+            $table->foreign('user_id')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

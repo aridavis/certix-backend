@@ -28,7 +28,7 @@ class UserController extends Controller
         }
 
         $user = new User();
-        $user->id = Uuid::generate();
+        $user->id = Uuid::generate()->string;
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
@@ -55,7 +55,6 @@ class UserController extends Controller
         }
 
         $user = User::find($request->user()->id);
-
 
         $user->name = $request->name;
         $user->email = $request->email;

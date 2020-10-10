@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             "id" => \Webpatser\Uuid\Uuid::generate()->string,
             "name" => 'Ari Davis',
             "password" => bcrypt("aridavis"),
-            "email" => "ari@gmail.com",
+            "email" => "aa@aa.com",
             "dob" => "2000-08-08",
             "phone_number" => "082296516272",
             "gender" => "M",
