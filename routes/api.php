@@ -53,6 +53,11 @@ Route::middleware('auth:api')->group(function (){
         Route::post('/', 'WalletController@store');
     });
 
+    Route::prefix('referral')->group(function(){
+        Route::get('/all', 'ReferralController@getAllReferralProgression');
+        Route::get('/{id}', 'ReferralController@show');
+        Route::get('/generate', 'ReferralController@store');
+    });
 });
 
 Route::prefix('auth')->group(function(){
@@ -61,12 +66,6 @@ Route::prefix('auth')->group(function(){
 
 Route::prefix('users')->group(function(){
     Route::post('register', 'UserController@register');
-});
-
-Route::prefix('referral')->group(function(){
-    Route::get('/all/{user_id}', 'ReferralController@getAllReferralProgression');
-    Route::get('/{id}', 'ReferralController@show');
-    Route::post('/use-referral', 'ReferralController@useReferral');
 });
 
 Route::get('genres', 'GenreController@index');

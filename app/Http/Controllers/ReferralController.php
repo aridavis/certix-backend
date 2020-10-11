@@ -7,16 +7,16 @@ use App\CustomResponse;
 use App\Referral;
 use App\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Webpatser\Uuid\Uuid;
 
 class ReferralController extends Controller
 {
 
-    public function getAllReferralProgression($user_id){
-        $referrals = Referral::where("user_id", '=', $user_id)->get();
+    public function getAllReferralProgression(){
+        $referrals = Referral::with('concert')->where('user_id', '=', Auth::id());
 
         foreach ($referrals as $ref){
-            $ref->concert = Concert::where("id", '=', $ref->concert_id);
             $ref->count = Referral::getProgress($ref->id);
         }
         return $referrals;
@@ -49,11 +49,14 @@ class ReferralController extends Controller
      */
     public function store(Request $request)
     {
-        $referral = new Referral();
-        $referral->id = substr(md5(Uuid::generate()->string), 0, 6);
-        $referral->user_id = $request->user_id;
-        $referral->concert_id = $request->concert_id;
-        $referral->save();
+        $referral = Referral::where('concert_id', '=', $request->concert_id)->where('user_id', '=', Auth::id());
+        if($referral == null){
+            $referral = new Referral();
+            $referral->id = substr(md5(Uuid::generate()->string), 0, 6);
+            $referral->user_id = $request->user_id;
+            $referral->concert_id = $request->concert_id;
+            $referral->save();
+        }
 
         return ['referral_id' => $referral->id];
     }
