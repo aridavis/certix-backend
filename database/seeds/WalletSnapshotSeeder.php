@@ -23,6 +23,6 @@ class WalletSnapshotSeeder extends Seeder
             "updated_at" => \Carbon\Carbon::now()
         ];
 
-        \Illuminate\Support\Facades\DB::table("wallet_snapshots")->insert($data);
+        \Illuminate\Support\Facades\DB::table("wallets")->insert($data);
     }
 }
