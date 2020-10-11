@@ -93,6 +93,8 @@ class TicketController extends Controller
         $addWallet->user_id = Seller::find($concert->seller_id)->user_id;
         $addWallet->save();
 
+
+
         return ["ticket" => $data, "details"=> $details];
     }
 

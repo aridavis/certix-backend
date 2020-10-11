@@ -53,6 +53,7 @@ class ImpressionController extends Controller
                 $new_imp->save();
             }
         }
+
     }
 
     /**
