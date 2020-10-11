@@ -63,6 +63,8 @@ Route::middleware('auth:api')->group(function (){
     });
 });
 
+Route::get('/plus-impression', 'ImpressionController@store');
+
 Route::get('/homepage', 'DashboardController@homePage');
 
 Route::prefix('auth')->group(function(){
