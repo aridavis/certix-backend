@@ -26,7 +26,7 @@ class DashboardController extends Controller
     }
 
     public function homePage(){
-        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert()];
+        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert(), "sellers" => Seller::all(), "concerts" => Concert::with('seller')->where('start_time', '>', Carbon::now())->get()];
     }
 
     public function topSeller(){
@@ -37,24 +37,24 @@ class DashboardController extends Controller
             $s->count_sold_ticket = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
             $s->count_total_concert = $concert->count();
         }
-        return $sellers->sortByDesc('count_sold')->take(5);
+        return $sellers->sortByDesc('count_sold')->take(5)->values();
     }
 
     public function topConcert(){
-        $concert = Concert::all();
+        $concert = Concert::where('start_time', '>', Carbon::now())->with('seller')->get();
         foreach($concert as $c){
+
             $tickets = Ticket::where('concert_id', '=', $c->id)->get();
             $c->count_sold = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
         }
 
-        return $concert->sortByDesc('count_sold')->take(5);
+        return $concert->sortByDesc('count_sold')->take(5)->values();
     }
 
     public function upcomingSoldTicket(Request $request){
         $query = "SELECT c.name, count(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."' and start_time > now() group by c.name";
         return DB::select($query);
     }
-
 
     public function profitGenre(Request $request){
         $query = "SELECT g.name, sum(price) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'

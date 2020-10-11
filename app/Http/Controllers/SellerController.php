@@ -20,9 +20,9 @@ class SellerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Seller::all();
+        return Seller::where('name', 'like', '%' . $request->keyword . '%')->get();
     }
 
     public function getSelling(Request $request){

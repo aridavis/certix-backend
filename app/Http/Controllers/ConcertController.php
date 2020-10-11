@@ -24,25 +24,26 @@ class ConcertController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Concert::all();
+        return Concert::where('name', 'like', '%' . $request->keyword . '%')->where('start_time', '>', Carbon::now())->with('seller')->get();
     }
 
-    public function getUserHistory(Request $request){
+    public function getUserHistory(Request $request)
+    {
         $ticket = Ticket::where('user_id', '=', $request->user()->id)->get();
         $concert = Concert::whereIn('id', $ticket->pluck('concert_id'))->get();
 
-        foreach ($concert as $c){
+        foreach ($concert as $c) {
             $c->ticket = $ticket->where('concert_id', '=', $c->id)->values();
             $c->genre = Genre::find($c->genre_id)->name;
             $c->status = Status::find($c->status_id)->name;
-            foreach ($c->ticket as $t){
+            foreach ($c->ticket as $t) {
                 $ticket_details = TicketDetail::where('ticket_id', '=', $t->id)->get();
                 $t->ticket_details = $ticket_details;
-                foreach($t->ticket_details as $s){
+                foreach ($t->ticket_details as $s) {
                     $starr = Review::where('ticket_detail_id', '=', $s->id)->first();
-                    $s->star = $starr == null? 0 : $starr->star;
+                    $s->star = $starr == null ? 0 : $starr->star;
                 }
             }
         }
@@ -58,24 +59,24 @@ class ConcertController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "start_time" => 'required|date|after:'.Carbon::now()->addWeek(1)->startOfDay(),
+            "start_time" => 'required|date|after:' . Carbon::now()->addWeek(1)->startOfDay(),
             "name" => "required",
             "price" => "required|numeric|min:10000",
             "genre" => "required|exists:genres,id",
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return CustomResponse::ErrorResponse($validator->errors());
         }
 
         $seller = Seller::findSellerByRequest($request);
-        if($seller == null){
+        if ($seller == null) {
             return CustomResponse::ErrorResponse(["seller_id", ["user is not a seller"]]);
         }
         $id = Uuid::generate()->string;
@@ -96,7 +97,7 @@ class ConcertController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Concert  $concert
+     * @param \App\Concert $concert
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -108,18 +109,18 @@ class ConcertController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Concert  $concert
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Concert $concert
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            "start_time" => 'required|date|after:'.Carbon::now()->addWeek(1)->startOfDay(),
+            "start_time" => 'required|date|after:' . Carbon::now()->addWeek(1)->startOfDay(),
             "status" => 'required|exists:statuses,name'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return CustomResponse::ErrorResponse($validator->errors());
         }
 
