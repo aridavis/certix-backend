@@ -21,57 +21,53 @@ class DashboardController extends Controller
             "total_income" => $this->totalIncome($request),
             "popular_genres" => $this->popularGenre($request),
             "profit_genre" => $this->profitGenre($request),
-            "upcoming_sold_ticket" => $this->upcomingSoldTicket($request)
+            'upcoming_sold_ticket' => $this->upcomingTotalSold($request),
+            "this_year_profit" => $this->thisYearProfit($request)
         ];
     }
 
-    public function homePage(){
-        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert()];
+
+    public function thisYearProfitQuery(Request $request, $month, $monthInt){
+        return "SELECT '$month' as month, ifnull(cast(sum(price) as int), 0) as Income FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id ."' and year(t.created_at) = year(now()) and month(t.created_at) = $monthInt";
     }
 
-    public function topSeller(){
-        $sellers = Seller::all();
-        foreach($sellers as $s){
-            $concert = Concert::where('seller_id', '=', $s->id)->get();
-            $tickets = Ticket::whereIn('concert_id', $concert->pluck('id'))->get();
-            $s->count_sold_ticket = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
-            $s->count_total_concert = $concert->count();
+    public function upcomingTotalSold(Request $request){
+        $query = "SELECT c.name as name, cast(count(*) as int) as value FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."' and start_time > now()
+group by c.name";
+        return DB::select($query);
+    }
+
+    public function thisYearProfit(Request $request){
+        $months = ["","January","February","March","April","May","June","July",
+            "August","September","October","November","December"];
+        $query = "";
+        for($i = 1; $i <= 12; $i++){
+            $query = $query . $this->thisYearProfitQuery($request, $months[$i], $i);
+
+            if($i != 12){
+                $query = $query . " union ";
+            }
         }
-        return $sellers->sortByDesc('count_sold')->take(5);
-    }
-
-    public function topConcert(){
-        $concert = Concert::all();
-        foreach($concert as $c){
-            $tickets = Ticket::where('concert_id', '=', $c->id)->get();
-            $c->count_sold = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
-        }
-
-        return $concert->sortByDesc('count_sold')->take(5);
-    }
-
-    public function upcomingSoldTicket(Request $request){
-        $query = "SELECT c.name, count(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."' and start_time > now() group by c.name";
         return DB::select($query);
     }
 
 
     public function profitGenre(Request $request){
-        $query = "SELECT g.name, sum(price) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
+        $query = "SELECT g.name, cast(sum(price) as int) as value FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
 group by g.name";
         return DB::select($query);
 
     }
 
     public function popularGenre(Request $request){
-        $query = "SELECT g.name, COUNT(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
+        $query = "SELECT g.name, COUNT(*) as value FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
 group by g.name";
         return DB::select($query);
 
     }
 
     public function totalIncome(Request $request){
-        $query = "SELECT sum(c.price) as price FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'";
+        $query = "SELECT cast(sum(c.price) as int) as price FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'";
         return DB::select($query)[0]->price;
     }
 
