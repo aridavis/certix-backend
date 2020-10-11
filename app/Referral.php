@@ -9,6 +9,11 @@ class Referral extends Model
     protected $keyType = "string";
     public $incrementing = false;
 
+    public static function getProgress($id){
+        $ticket_referred = Ticket::where("referral_id", '=', $id)->get();
+        return $ticket_referred->count();
+    }
+
     public function user(){
         return $this->belongsTo(User::class);
     }

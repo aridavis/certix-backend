@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ReviewTypeSeeder::class);
         $this->call(SellerSeeder::class);
         $this->call(SellerApplicationSeeder::class);
-        $this->call(WalletSnapshotSeeder::class);
+        $this->call(WalletSeeder::class);
         $this->call(ConcertSeeder::class);
         $this->call(TicketSeeder::class);
         $this->call(TicketDetailSeeder::class);

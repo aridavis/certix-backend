@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Concert;
 use App\CustomResponse;
+use App\Referral;
 use App\Seller;
 use App\Ticket;
 use App\TicketDetail;
@@ -48,11 +49,19 @@ class TicketController extends Controller
            return CustomResponse::ErrorResponse(['wallet' => ['balance is not enough.']]);
         }
 
+        if($request->has('referral_id')){
+            if(Referral::getProgress($request->referral_id) > 5){
+                return CustomResponse::ErrorResponse(['limit' => ['limit referral exceeded']]);
+            }
+        }
 
         $data = new Ticket();
         $data->id = Uuid::generate()->string;
         $data->user_id = $request->user()->id;
         $data->concert_id = $request->concert_id;
+        if($request->has('referral_id')){
+            $data->referral_id = $request->referral_id;
+        }
         $data->save();
 
         $details = [];

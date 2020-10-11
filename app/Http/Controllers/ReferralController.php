@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Concert;
+use App\CustomResponse;
 use App\Referral;
 use App\Ticket;
 use Illuminate\Http\Request;
@@ -10,18 +11,13 @@ use Webpatser\Uuid\Uuid;
 
 class ReferralController extends Controller
 {
-    public function getProgress($id){
-        $ticket_referred = Ticket::where("referral_id", '=', $id)->get();
-        return ['count' => $ticket_referred->count()];
-    }
 
     public function getAllReferralProgression($user_id){
-//        get referralnya apa aja, get concertnya apa aja, get progresssnya apa aja
         $referrals = Referral::where("user_id", '=', $user_id)->get();
 
         foreach ($referrals as $ref){
             $ref->concert = Concert::where("id", '=', $ref->concert_id);
-            $ref->count = $this->getProgress($ref->id);
+            $ref->count = Referral::getProgress($ref->id);
         }
         return $referrals;
     }
