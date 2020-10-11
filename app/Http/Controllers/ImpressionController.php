@@ -40,7 +40,7 @@ class ImpressionController extends Controller
     {
         $imp = Impression::where('ip_address', '=', $request->getClientIp())->where('concert_id', '=', $request->concert_id)->orderByDesc('created_at')->first();
         $interval = CarbonInterval::make('30seconds');
-//        dd($interval);
+
         if($imp != null){
             $treshold = Carbon::make($imp->created_at)->addSeconds($interval->totalSeconds);
             if(Carbon::now() > $treshold){
@@ -52,6 +52,15 @@ class ImpressionController extends Controller
                 $new_imp->updated_at = Carbon::now();
                 $new_imp->save();
             }
+        }
+        else{
+            $new_imp = new Impression();
+            $new_imp->id = Uuid::generate()->string;
+            $new_imp->ip_address = $request->getClientIp();
+            $new_imp->concert_id = $request->concert_id;
+            $new_imp->created_at = Carbon::now();
+            $new_imp->updated_at = Carbon::now();
+            $new_imp->save();
         }
     }
 

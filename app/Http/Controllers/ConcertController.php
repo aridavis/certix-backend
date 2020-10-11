@@ -29,7 +29,7 @@ class ConcertController extends Controller
         $concert = new Concert();
         $concert = $concert->newQuery();
         if($request->has('keyword')){
-            $concert = $concert->where('name', 'like', '%' .  $request->keyword . '%')->where('start_date', '>', Carbon::now());
+            $concert = $concert->where('name', 'like', '%' .  $request->keyword . '%')->where('start_time', '>', Carbon::now());
         }
 
         return $concert->with('seller')->get();

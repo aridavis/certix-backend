@@ -31,7 +31,11 @@ class ReferralController extends Controller
         $referral = Referral::where('id', '=', $request->referral_id)->first();
         if($referral == null){
             return CustomResponse::ErrorResponse(["error" => "Referral code not found"]);
-        }else if($referral->concert_id != $request->concert_id){
+        }
+        else if(Ticket::where('user_id', '=', $request->user()->id)->where('referral_id', '=', $request->referral_id)->first() != null){
+            return CustomResponse::ErrorResponse(['error' => ['Referral code is already used']]);
+        }
+        else if($referral->concert_id != $request->concert_id){
             return CustomResponse::ErrorResponse(["error" => "Cannot use on this concert"]);
         }else if($referral->user_id == $request->user()->id){
             return CustomResponse::ErrorResponse(["error" => "Cannot use own referral code"]);
