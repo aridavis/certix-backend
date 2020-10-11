@@ -49,7 +49,7 @@ class TicketController extends Controller
             if(Referral::getProgress($request->referral_id) >= 5){
                 return CustomResponse::ErrorResponse(['error' => ['Limit referral exceeded']]);
             }
-            $price = $concert->price * 0.2 > 50000 ? $concert->price - 50.000 : $concert->price * 0.8;
+            $price = $concert->price * $request->quantity * 0.2 > 50000 ? $concert->price * $request->quantity - 50.000 : $concert->price * $request->quantity * 0.8;
         }
         if($price > $wallet){
             return CustomResponse::ErrorResponse(['error' => ['Insufficient balance.']]);
@@ -86,7 +86,7 @@ class TicketController extends Controller
 
         $addWallet = new Wallet();
         $addWallet->id = Uuid::generate()->string;
-        $addWallet->value = $price * 0.9;
+        $addWallet->value = $price;
         $addWallet->user_id = Seller::find($concert->seller_id)->user_id;
         $addWallet->save();
 
