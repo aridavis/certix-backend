@@ -14,6 +14,14 @@ class Concert extends Model
         return Concert::where("id", '=', $id)->first();
     }
 
+    public function ticket(){
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function seller(){
+        return $this->belongsTo(Seller::class);
+    }
+
     public function genre(){
         return $this->belongsTo(Genre::class);
     }

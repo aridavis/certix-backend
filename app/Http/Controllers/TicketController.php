@@ -80,13 +80,13 @@ class TicketController extends Controller
 
         $minusWallet = new Wallet();
         $minusWallet->id = Uuid::generate()->string;
-        $minusWallet->value = $concert->price * $request->quantity * -1;
+        $minusWallet->value = $concert->price * $request->quantity * -1 * 0.9;
         $minusWallet->user_id = $request->user()->id;
         $minusWallet->save();
 
         $addWallet = new Wallet();
         $addWallet->id = Uuid::generate()->string;
-        $addWallet->value = $concert->price * $request->quantity;
+        $addWallet->value = $concert->price * $request->quantity * 0.9;
         $addWallet->user_id = Seller::find($concert->seller_id)->user_id;
         $addWallet->save();
 
