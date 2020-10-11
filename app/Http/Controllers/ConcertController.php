@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Concert;
 use App\CustomResponse;
 use App\Genre;
+use App\Review;
 use App\Seller;
 use App\Status;
 use App\Ticket;
@@ -39,6 +40,7 @@ class ConcertController extends Controller
             foreach ($c->ticket as $t){
                 $tokens = TicketDetail::where('ticket_id', '=', $t->id)->get();
                 $t->tokens = $tokens->pluck('token');
+                $t->star = Review::where('ticket_detail_id', '=', $t->id)->get()->star;
             }
         }
 
