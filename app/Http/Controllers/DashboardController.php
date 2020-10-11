@@ -26,33 +26,6 @@ class DashboardController extends Controller
         ];
     }
 
-<<<<<<< HEAD
-=======
-    public function homePage(){
-        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert()];
-    }
-
-    public function topSeller(){
-        $sellers = Seller::all();
-        foreach($sellers as $s){
-            $concert = Concert::where('seller_id', '=', $s->id)->get();
-            $tickets = Ticket::whereIn('concert_id', $concert->pluck('id'))->get();
-            $s->count_sold_ticket = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
-            $s->count_total_concert = $concert->count();
-        }
-        return $sellers->sortByDesc('count_sold')->take(5);
-    }
-
-    public function topConcert(){
-        $concert = Concert::all();
-        foreach($concert as $c){
-            $tickets = Ticket::where('concert_id', '=', $c->id)->get();
-            $c->count_sold = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
-        }
-
-        return $concert->sortByDesc('count_sold')->take(5);
-    }
->>>>>>> 1fe54a93bb7fc506ec8d0a6170b879d99278b1b9
 
     public function thisYearProfitQuery(Request $request, $month, $monthInt){
         return "SELECT '$month' as month, ifnull(cast(sum(price) as int), 0) as Income FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id ."' and year(t.created_at) = year(now()) and month(t.created_at) = $monthInt";
