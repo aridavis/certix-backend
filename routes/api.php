@@ -64,7 +64,9 @@ Route::prefix('users')->group(function(){
 });
 
 Route::prefix('referral')->group(function(){
-    Route::get('/{id}', 'ReferralController@index');
+    Route::get('/all/{user_id}', 'ReferralController@getAllReferralProgression');
+    Route::get('/{id}', 'ReferralController@show');
+    Route::post('/use-referral', 'ReferralController@useReferral');
 });
 
 Route::get('genres', 'GenreController@index');
