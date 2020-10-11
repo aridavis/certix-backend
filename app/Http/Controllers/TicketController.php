@@ -44,22 +44,22 @@ class TicketController extends Controller
 
         $concert = Concert::find($request->concert_id);
         $wallet = Wallet::where('user_id', '=', $request->user()->id)->sum('value');
-
-        if($concert->price * $request->quantity > $wallet){
-           return CustomResponse::ErrorResponse(['wallet' => ['balance is not enough.']]);
-        }
-
-        if($request->has('referral_id')){
+        $price = $concert->price * $request->quantity;
+        if($request->has('referral_id') && $request->referral_id != null){
             if(Referral::getProgress($request->referral_id) >= 5){
-                return CustomResponse::ErrorResponse(['limit' => ['limit referral exceeded']]);
+                return CustomResponse::ErrorResponse(['error' => ['Limit referral exceeded']]);
             }
+            $price = $concert->price * 0.2 > 50000 ? $concert->price - 50.000 : $concert->price * 0.8;
+        }
+        if($price > $wallet){
+            return CustomResponse::ErrorResponse(['error' => ['Insufficient balance.']]);
         }
 
         $data = new Ticket();
         $data->id = Uuid::generate()->string;
         $data->user_id = $request->user()->id;
         $data->concert_id = $request->concert_id;
-        if($request->has('referral_id')){
+        if($request->has('referral_id') && $request->referral_id != null){
             $data->referral_id = $request->referral_id;
         }
         $data->save();
@@ -80,13 +80,13 @@ class TicketController extends Controller
 
         $minusWallet = new Wallet();
         $minusWallet->id = Uuid::generate()->string;
-        $minusWallet->value = $concert->price * $request->quantity * -1 * 0.9;
+        $minusWallet->value = $price * -1;
         $minusWallet->user_id = $request->user()->id;
         $minusWallet->save();
 
         $addWallet = new Wallet();
         $addWallet->id = Uuid::generate()->string;
-        $addWallet->value = $concert->price * $request->quantity * 0.9;
+        $addWallet->value = $price * 0.9;
         $addWallet->user_id = Seller::find($concert->seller_id)->user_id;
         $addWallet->save();
 
