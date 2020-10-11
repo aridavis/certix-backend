@@ -26,7 +26,6 @@ class DashboardController extends Controller
         ];
     }
 
-
     public function thisYearProfitQuery(Request $request, $month, $monthInt){
         return "SELECT '$month' as month, ifnull(cast(sum(price) as int), 0) as Income FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id ."' and year(t.created_at) = year(now()) and month(t.created_at) = $monthInt";
     }
