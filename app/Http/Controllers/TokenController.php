@@ -19,7 +19,7 @@ class TokenController extends Controller
         $detail = TicketDetail::where('token', '=', $request->token)->first();
 
         if($detail == null){
-            return CustomResponse::UnauthorizedResponse();
+            return CustomResponse::ErrorResponse(["Message" => ["Token is invalid!"]]);
         }
 
         $detail->cookie = Str::random(32);
