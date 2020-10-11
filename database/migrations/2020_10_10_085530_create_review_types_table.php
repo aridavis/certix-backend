@@ -15,7 +15,7 @@ class CreateReviewTypesTable extends Migration
     {
         Schema::create('review_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->timestamps();
         });
     }
