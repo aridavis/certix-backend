@@ -26,6 +26,7 @@ Route::middleware('auth:api')->group(function (){
 
     Route::prefix('sellers')->group(function (){
         Route::get('/', 'SellerController@index');
+        Route::get('/sellings', 'SellerController@getSelling');
         Route::get('/{id}', 'SellerController@show');
         Route::put('/{id}', 'SellerController@update');
     });
@@ -65,3 +66,5 @@ Route::prefix('users')->group(function(){
 Route::prefix('referral')->group(function(){
     Route::get('/{id}', 'ReferralController@index');
 });
+
+Route::get('genres', 'GenreController@index');
