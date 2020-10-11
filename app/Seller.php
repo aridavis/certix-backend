@@ -13,6 +13,10 @@ class Seller extends Model
         $this->belongsTo(User::class);
     }
 
+    public function concert(){
+        return $this->hasMany(Concert::class);
+    }
+
     public static function findSellerByUserId($id){
         return Seller::where("user_id", '=', $id)->first();
     }

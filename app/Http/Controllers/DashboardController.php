@@ -25,7 +25,30 @@ class DashboardController extends Controller
         ];
     }
 
-//    public function
+    public function homePage(){
+        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert()];
+    }
+
+    public function topSeller(){
+        $sellers = Seller::all();
+        foreach($sellers as $s){
+            $concert = Concert::where('seller_id', '=', $s->id)->get();
+            $tickets = Ticket::whereIn('concert_id', $concert->pluck('id'))->get();
+            $s->count_sold_ticket = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
+            $s->count_total_concert = $concert->count();
+        }
+        return $sellers->sortByDesc('count_sold')->take(5);
+    }
+
+    public function topConcert(){
+        $concert = Concert::all();
+        foreach($concert as $c){
+            $tickets = Ticket::where('concert_id', '=', $c->id)->get();
+            $c->count_sold = TicketDetail::whereIn('ticket_id', $tickets->pluck('id'))->count();
+        }
+
+        return $concert->sortByDesc('count_sold')->take(5);
+    }
 
     public function upcomingSoldTicket(Request $request){
         $query = "SELECT c.name, count(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."' and start_time > now() group by c.name";

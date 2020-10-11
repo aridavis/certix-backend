@@ -62,6 +62,8 @@ Route::middleware('auth:api')->group(function (){
     });
 });
 
+Route::get('/', 'DashboardController@homePage');
+
 Route::prefix('auth')->group(function(){
     Route::post('login', 'AuthController@login');
 });
