@@ -49,7 +49,7 @@ class TicketController extends Controller
             if(Referral::getProgress($request->referral_id) >= 5){
                 return CustomResponse::ErrorResponse(['error' => ['Limit referral exceeded']]);
             }
-            $price = $concert->price * $request->quantity * 0.2 > 50000 ? $concert->price * $request->quantity - 50.000 : $concert->price * $request->quantity * 0.8;
+            $price = $concert->price * $request->quantity * 0.2 > 50000 ? $concert->price * $request->quantity - 50000 : $concert->price * $request->quantity * 0.8;
         }
         if($price > $wallet){
             return CustomResponse::ErrorResponse(['error' => ['Insufficient balance.']]);

@@ -18,6 +18,7 @@ Route::middleware('auth:api')->group(function (){
     Route::put('users', 'UserController@update');
     Route::post('auth/logout', 'AuthController@logout');
 
+
     Route::prefix('seller/application')->group(function(){
         Route::get('', 'SellerApplicationController@index');
         Route::post('', 'SellerApplicationController@store');
@@ -82,4 +83,6 @@ Route::prefix('sellers')->group(function (){
 Route::prefix('concerts')->group(function (){
     Route::get('/', 'ConcertController@index');
     Route::get('/{id}', 'ConcertController@show');
+    Route::post('validation/token', 'TokenController@updateToken');
+    Route::post('validation/session', 'TokenController@validateSession');
 });
