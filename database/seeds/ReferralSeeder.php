@@ -15,7 +15,7 @@ class ReferralSeeder extends Seeder
     }
     private function initiateData(){
         $data = [
-            "id" => \Webpatser\Uuid\Uuid::generate()->string,
+            "id" => substr(md5(\Webpatser\Uuid\Uuid::generate()->string), 0, 6),
             "user_id" => \App\User::all()->first()->id,
             "concert_id" => \App\Concert::all()->first()->id,
             "created_at" => \Carbon\Carbon::now(),

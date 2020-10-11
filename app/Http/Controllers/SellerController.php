@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Concert;
 use App\CustomResponse;
 use App\Seller;
 use App\SellerApplication;
+use App\Status;
+use App\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -22,6 +25,14 @@ class SellerController extends Controller
         return Seller::all();
     }
 
+    public function getSelling(Request $request){
+        $concert = Concert::where('seller_id', '=', Seller::findSellerByRequest($request)->id)->get();
+        foreach ($concert as $c){
+            $c->income = $c->price * Ticket::where('concert_id','=', $c->id)->join('ticket_details','ticket_details.ticket_id','=', 'tickets.id')->count();
+            $c->status = Status::find($c->status_id)->name;
+        }
+        return $concert;
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -31,14 +42,12 @@ class SellerController extends Controller
      */
     public function store($application)
     {
-
         $data = new Seller();
         $data->id = Uuid::generate()->string;
         $data->user_id = $application->user_id;
         $data->ic_number = $application->ic_number;
         $data->name = $application->name;
         $data->save();
-
     }
 
     /**

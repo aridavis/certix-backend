@@ -23,7 +23,7 @@ class ConcertSeeder extends Seeder
             "name" => "Berbahagia Selalu",
             "price" => 100000,
             "genre_id" => 1,
-            "stream_key" => $id,
+            "stream_key" => substr(md5($id), 0, 6),
             "status_id" => 4,
             "created_at" => \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()

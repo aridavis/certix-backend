@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Concert;
 use App\CustomResponse;
 use App\Genre;
+use App\Review;
 use App\Seller;
 use App\Status;
 use App\Ticket;
@@ -33,16 +34,18 @@ class ConcertController extends Controller
         $concert = Concert::whereIn('id', $ticket->pluck('concert_id'))->get();
 
         foreach ($concert as $c){
-            $c->ticket = $ticket->where('concert_id', '=', $c->id);
+            $c->ticket = $ticket->where('concert_id', '=', $c->id)->values();
+            $c->genre = Genre::find($c->genre_id)->name;
+            $c->status = Status::find($c->status_id)->name;
             foreach ($c->ticket as $t){
                 $tokens = TicketDetail::where('ticket_id', '=', $t->id)->get();
                 $t->tokens = $tokens->pluck('token');
+                $t->star = Review::where('ticket_detail_id', '=', $t->id)->get()->star;
             }
         }
 
-        $upcomingConcert = $concert->where('start_time', '>', Carbon::now());
-        $pastConcert = $concert->where('start_time', '<=', Carbon::now());
-
+        $upcomingConcert = $concert->where('start_time', '>', Carbon::now())->values();
+        $pastConcert = $concert->where('start_time', '<=', Carbon::now())->values();
 
         return ['upcoming' => $upcomingConcert, 'past' => $pastConcert];
 
@@ -61,7 +64,7 @@ class ConcertController extends Controller
             "start_time" => 'required|date|after:'.Carbon::now()->addWeek(1)->startOfDay(),
             "name" => "required",
             "price" => "required|numeric|min:10000",
-            "genre" => "required|exists:genres,name",
+            "genre" => "required|exists:genres,id",
         ]);
 
         if($validator->fails()){
@@ -72,15 +75,16 @@ class ConcertController extends Controller
         if($seller == null){
             return CustomResponse::ErrorResponse(["seller_id", ["user is not a seller"]]);
         }
-
+        $id = Uuid::generate()->string;
         $data = new Concert();
-        $data->id = Uuid::generate()->string;
+        $data->id = $id;
         $data->seller_id = Seller::findSellerByRequest($request)->id;
         $data->start_time = $request->start_time;
         $data->name = $request->name;
         $data->price = $request->price;
-        $data->genre_id = Genre::findGenreByName($request->genre)->id;
+        $data->genre_id = $request->genre;
         $data->status_id = Status::findStatusByName("scheduled")->id;
+        $data->stream_key = substr(md5($id), 0, 6);
         $data->save();
 
         return $data;

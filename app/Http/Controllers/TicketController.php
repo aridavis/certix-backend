@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Concert;
+use App\CustomResponse;
+use App\Referral;
+use App\Seller;
 use App\Ticket;
 use App\TicketDetail;
+use App\User;
+use App\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Webpatser\Uuid\Uuid;
 
 class TicketController extends Controller
@@ -34,10 +41,27 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
+
+        $concert = Concert::find($request->concert_id);
+        $wallet = Wallet::where('user_id', '=', $request->user()->id)->sum('value');
+
+        if($concert->price * $request->quantity > $wallet){
+           return CustomResponse::ErrorResponse(['wallet' => ['balance is not enough.']]);
+        }
+
+        if($request->has('referral_id')){
+            if(Referral::getProgress($request->referral_id) > 5){
+                return CustomResponse::ErrorResponse(['limit' => ['limit referral exceeded']]);
+            }
+        }
+
         $data = new Ticket();
         $data->id = Uuid::generate()->string;
         $data->user_id = $request->user()->id;
         $data->concert_id = $request->concert_id;
+        if($request->has('referral_id')){
+            $data->referral_id = $request->referral_id;
+        }
         $data->save();
 
         $details = [];
@@ -53,6 +77,18 @@ class TicketController extends Controller
 
             array_push($details, $detail);
         }
+
+        $minusWallet = new Wallet();
+        $minusWallet->id = Uuid::generate()->string;
+        $minusWallet->value = $concert->price * $request->quantity * -1;
+        $minusWallet->user_id = $request->user()->id;
+        $minusWallet->save();
+
+        $addWallet = new Wallet();
+        $addWallet->id = Uuid::generate()->string;
+        $addWallet->value = $concert->price * $request->quantity;
+        $addWallet->user_id = Seller::find($concert->seller_id)->user_id;
+        $addWallet->save();
 
         return ["ticket" => $data, "details"=> $details];
     }

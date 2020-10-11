@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class TicketDetailSeeder extends Seeder
 {
@@ -16,12 +17,13 @@ class TicketDetailSeeder extends Seeder
 
 
     private function initiateData(){
+        $id = \Webpatser\Uuid\Uuid::generate()->string;
         $data = [
-            "id" => \Webpatser\Uuid\Uuid::generate()->string,
+            "id" => $id,
             "ticket_id" => \App\Ticket::all()->first()->id,
-            "isWatching" => 0,
-            "token" => NULL,
-            "cookie" => NULL,
+            "is_watching" => 0,
+            "token" => strtoupper(Str::random(6)),
+            "cookie" => cookie('token', ''),
             "created_at" => \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ];

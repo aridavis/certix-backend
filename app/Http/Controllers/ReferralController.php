@@ -3,11 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Concert;
+use App\CustomResponse;
 use App\Referral;
+use App\Ticket;
 use Illuminate\Http\Request;
+use Webpatser\Uuid\Uuid;
 
 class ReferralController extends Controller
 {
+
+    public function getAllReferralProgression($user_id){
+        $referrals = Referral::where("user_id", '=', $user_id)->get();
+
+        foreach ($referrals as $ref){
+            $ref->concert = Concert::where("id", '=', $ref->concert_id);
+            $ref->count = Referral::getProgress($ref->id);
+        }
+        return $referrals;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +49,13 @@ class ReferralController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $referral = new Referral();
+        $referral->id = substr(md5(Uuid::generate()->string), 0, 6);
+        $referral->user_id = $request->user_id;
+        $referral->concert_id = $request->concert_id;
+        $referral->save();
+
+        return ['referral_id' => $referral->id];
     }
 
     /**
