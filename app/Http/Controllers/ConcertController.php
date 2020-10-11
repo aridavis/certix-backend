@@ -41,7 +41,8 @@ class ConcertController extends Controller
                 $ticket_details = TicketDetail::where('ticket_id', '=', $t->id)->get();
                 $t->ticket_details = $ticket_details;
                 foreach($t->ticket_details as $s){
-                    $s->star = Review::where('ticket_detail_id', '=', $s->id)->first()->star;
+                    $starr = Review::where('ticket_detail_id', '=', $s->id)->first();
+                    $s->star = $starr == null? 0 : $starr->star;
                 }
             }
         }
