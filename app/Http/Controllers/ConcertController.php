@@ -50,15 +50,16 @@ class ConcertController extends Controller
         if($seller == null){
             return CustomResponse::ErrorResponse(["seller_id", ["user is not a seller"]]);
         }
-
+        $id = Uuid::generate()->string;
         $data = new Concert();
-        $data->id = Uuid::generate()->string;
+        $data->id = $id;
         $data->seller_id = Seller::findSellerByRequest($request)->id;
         $data->start_time = $request->start_time;
         $data->name = $request->name;
         $data->price = $request->price;
         $data->genre_id = Genre::findGenreByName($request->genre)->id;
         $data->status_id = Status::findStatusByName("scheduled")->id;
+        $data->stream_key = substr(md5($id), 0, 6);
         $data->save();
 
         return $data;
