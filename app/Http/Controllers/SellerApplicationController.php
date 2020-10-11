@@ -46,10 +46,9 @@ class SellerApplicationController extends Controller
         $seller = Seller::findSellerByUserId($request->user()->id);
         $prevApplications = SellerApplication::where('user_id', '=', $request->user()->id)->where('status_id', '!=', Status::findStatusByName('rejected')->id)->first();
 
-
         if($seller != null || $prevApplications != null){
             return CustomResponse::ErrorResponse([
-                "user_id" => "user is still on pending activation or user has been registered as seller"
+                "user_id" =>[ "user is still on pending activation or user has been registered as seller"]
             ]);
         }
 
