@@ -17,7 +17,6 @@ class ConcertSeeder extends Seeder
     private function initiateData(){
         $sellers = \App\Seller::all();
 
-
         for($i = 0 ; $i < $sellers->count() ; $i++){
             for($j = 0 ; $j < 5 ; $j++){
                 $id = \Webpatser\Uuid\Uuid::generate()->string;
@@ -37,7 +36,6 @@ class ConcertSeeder extends Seeder
 
             }
         }
-
 
     }
 }

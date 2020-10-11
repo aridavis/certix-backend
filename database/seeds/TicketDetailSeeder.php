@@ -18,7 +18,7 @@ class TicketDetailSeeder extends Seeder
 
     private function initiateData(){
 
-        for($i = 0 ; $i < 20 ; $i++){
+        for($i = 0 ; $i < 100 ; $i++){
             $id = \Webpatser\Uuid\Uuid::generate()->string;
             $data = [
                 "id" => $id,

@@ -15,6 +15,7 @@ class SellerApplicationSeeder extends Seeder
     }
 
     private function initiateData(){
+
         $data = [
             "id" => \Webpatser\Uuid\Uuid::generate()->string,
             "user_id" => \App\User::all()->first()->id,
