@@ -31,7 +31,7 @@ class DashboardController extends Controller
 
     public function homePage()
     {
-        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert(), "sellers" => Seller::all(), "concerts" => Concert::with('seller')->where('start_time', '>', Carbon::now())->get()];
+        return ["top_sellers" => $this->topSeller(), "top_concerts" => $this->topConcert(), "sellers" => Seller::limit(10)->get(), "concerts" => Concert::with('seller')->where('start_time', '>', Carbon::now())->limit(10)->get()];
     }
 
     public function getImpression(Request $request)

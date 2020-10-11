@@ -29,7 +29,7 @@ class SellerSeeder extends Seeder
 
         \Illuminate\Support\Facades\DB::table('sellers')->insert($data);
 
-        for($i = 2; $i < 100 ; $i++){
+        for($i = 2; $i < 30 ; $i++){
             $x = rand(0,1);
             $data = [
                 "id" => \Webpatser\Uuid\Uuid::generate()->string,
