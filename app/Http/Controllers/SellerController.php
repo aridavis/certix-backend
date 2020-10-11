@@ -22,7 +22,16 @@ class SellerController extends Controller
      */
     public function index(Request $request)
     {
-        return Seller::where('name', 'like', '%' . $request->keyword . '%')->get();
+        $seller = new Seller();
+        $seller = $seller->newQuery();
+        if($request->has('keyword')){
+            $seller = $seller->where('name', 'like', '%' .  $request->keyword . '%');
+        }
+        return $seller->get();
+    }
+
+    public function isSeller(Request $request){
+        return Seller::findSellerByRequest($request) != null ? 1 : 0;
     }
 
     public function getSelling(Request $request){
