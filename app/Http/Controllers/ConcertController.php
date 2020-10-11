@@ -34,6 +34,7 @@ class ConcertController extends Controller
 
         foreach ($concert as $c){
             $c->ticket = $ticket->where('concert_id', '=', $c->id)->values();
+            $c->genre = Genre::find($c->genre_id)->name;
             $c->status = Status::find($c->status_id)->name;
             foreach ($c->ticket as $t){
                 $tokens = TicketDetail::where('ticket_id', '=', $t->id)->get();
