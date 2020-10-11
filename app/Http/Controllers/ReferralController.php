@@ -14,7 +14,7 @@ class ReferralController extends Controller
 {
 
     public function getAllReferralProgression(Request $request){
-        $referrals = Referral::with('concert')->where('user_id', '=', $request->user()->id)->get();
+        $referrals = Referral::with('concert.genre')->where('user_id', '=', $request->user()->id)->get();
 
         foreach ($referrals as $ref){
             $ref->count = Referral::getProgress($ref->id);

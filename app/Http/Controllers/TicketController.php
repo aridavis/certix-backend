@@ -50,7 +50,7 @@ class TicketController extends Controller
         }
 
         if($request->has('referral_id')){
-            if(Referral::getProgress($request->referral_id) > 5){
+            if(Referral::getProgress($request->referral_id) >= 5){
                 return CustomResponse::ErrorResponse(['limit' => ['limit referral exceeded']]);
             }
         }
