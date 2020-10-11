@@ -18,7 +18,7 @@ class CreateReviewDetailsTable extends Migration
             $table->string('review_id');
             $table->unsignedBigInteger('review_type_id');
             $table->foreign('review_type_id')->on('review_types')->references('id')->onUpdate('cascade')->onDelete('cascade');
-
+            $table->foreign('review_id')->on('reviews')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
