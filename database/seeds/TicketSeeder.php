@@ -15,22 +15,26 @@ class TicketSeeder extends Seeder
     }
 
     private function initiateData(){
+        $concerts = \App\Concert::all();
 
-        for($i = 0 ; $i < 100 ; $i++){
-            $user_id = \App\User::all()->random()->id;
-            $concert_id = \App\Concert::all()->random()->id;
-            $data = [
-                "id" => \Webpatser\Uuid\Uuid::generate()->string,
-                "user_id" => $user_id,
-                "concert_id" => $concert_id,
-                "referral_id" => \App\Referral::where("concert_id" , $concert_id)->where("user_id", "!=", $user_id)->get()->first()->id,
-                "created_at" => \Carbon\Carbon::now(),
-                "updated_at" => \Carbon\Carbon::now()
-            ];
+        for($i = 0; $i < $concerts->count() ; $i++){
+            for($j = 0; $j < 10 ; $j++){
+                $user_id = \App\User::all()->random()->id;
+                $referral = \App\Referral::where("concert_id" , $concerts[$i]->id)->where("user_id", "!=", $user_id)->get()->random();
+                $count_referral = \App\Ticket::where("referral_id",$referral->id)->count();
+                $x = rand(1,3);
 
-            \Illuminate\Support\Facades\DB::table("tickets")->insert($data);
+                $data = [
+                    "id" => \Webpatser\Uuid\Uuid::generate()->string,
+                    "user_id" => $user_id,
+                    "concert_id" => $concerts[$i]->id,
+                    "referral_id" => $referral->id,
+                    "created_at" => \Carbon\Carbon::now(),
+                    "updated_at" => \Carbon\Carbon::now()
+                ];
+//                \Illuminate\Support\Facades\DB::table("tickets")->insert($data);
+                if($count_referral < $x) \Illuminate\Support\Facades\DB::table("tickets")->insert($data);
+            }
         }
-
-
     }
 }

@@ -29,6 +29,5 @@ class ReferralSeeder extends Seeder
                 \Illuminate\Support\Facades\DB::table("referrals")->insert($data);
             }
         }
-
     }
 }

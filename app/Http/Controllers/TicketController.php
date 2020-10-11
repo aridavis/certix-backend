@@ -64,6 +64,22 @@ class TicketController extends Controller
                 return CustomResponse::ErrorResponse(['error' => ['Referral code is already used']]);
             }
             $data->referral_id = $request->referral_id;
+            if(Referral::getProgress($request->referral_id) >= 4){
+                $uid = Referral::find($request->referral_id)->user_id;
+                $free_ticket = new Ticket();
+                $free_ticket_id = Uuid::generate()->string;
+                $free_ticket->id = $free_ticket_id;
+                $free_ticket->user_id = $uid;
+                $free_ticket->concert_id = $request->concert_id;
+                $free_ticket->save();
+                $free_ticket_detail = new TicketDetail();
+                $free_ticket_detail->id = Uuid::generate()->string;
+                $free_ticket_detail->ticket_id = $free_ticket_id;
+                $free_ticket_detail->token = strtoupper(Str::random(6));
+                $free_ticket_detail->cookie = "";
+                $free_ticket_detail->is_watching = false;
+                $free_ticket_detail->save();
+            }
         }
         $data->save();
 
@@ -92,6 +108,8 @@ class TicketController extends Controller
         $addWallet->value = $price;
         $addWallet->user_id = Seller::find($concert->seller_id)->user_id;
         $addWallet->save();
+
+
 
         return ["ticket" => $data, "details"=> $details];
     }
