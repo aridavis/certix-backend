@@ -39,7 +39,12 @@ class ConcertController extends Controller
                 $t->tokens = $tokens->pluck('token');
             }
         }
-        return $concert;
+
+        $upcomingConcert = $concert->where('start_time', '>', Carbon::now());
+        $pastConcert = $concert->where('start_time', '<=', Carbon::now());
+
+
+        return ['upcoming' => $upcomingConcert, 'past' => $pastConcert];
 
     }
 
