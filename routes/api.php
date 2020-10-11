@@ -25,7 +25,6 @@ Route::middleware('auth:api')->group(function (){
     });
 
     Route::prefix('sellers')->group(function (){
-
         Route::get('/', 'SellerController@index');
         Route::get('/{id}', 'SellerController@show');
         Route::put('/{id}', 'SellerController@update');
@@ -33,6 +32,7 @@ Route::middleware('auth:api')->group(function (){
 
     Route::prefix('concerts')->group(function(){
         Route::post('/', 'ConcertController@store');
+        Route::get('/history', 'ConcertController@getUserHistory');
         Route::get('/', 'ConcertController@index');
         Route::get('/{id}', 'ConcertController@show');
         Route::put('/{id}', 'ConcertController@update');
@@ -47,6 +47,10 @@ Route::middleware('auth:api')->group(function (){
         Route::post('/', 'ReviewController@store');
     });
 
+    Route::prefix('wallet')->group(function(){
+        Route::get('/', 'WalletController@index');
+        Route::post('/', 'WalletController@store');
+    });
 
 });
 
