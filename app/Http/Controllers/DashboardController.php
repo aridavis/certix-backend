@@ -25,9 +25,13 @@ class DashboardController extends Controller
         ];
     }
 
-//    public function
+
+    public function upcomingSoldTicketQuery(Request $request, $month, $monthInt){
+        return "SELECT '$month' , sum(price) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '1dd03d20-0b5f-11eb-8a20-1d09e7ab301b' and year(t.created_at) = year(now()) and month(t.created_at) = 1"
+    }
 
     public function upcomingSoldTicket(Request $request){
+
         $query = "SELECT c.name, count(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."' and start_time > now() group by c.name";
         return DB::select($query);
     }
