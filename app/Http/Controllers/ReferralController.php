@@ -49,7 +49,7 @@ class ReferralController extends Controller
      */
     public function store(Request $request)
     {
-        $referral = Referral::where('concert_id', '=', $request->concert_id)->where('user_id', '=', Auth::id());
+        $referral = Referral::where('concert_id', '=', $request->concert_id)->where('user_id', '=', Auth::id())->first();
         if($referral == null){
             $referral = new Referral();
             $referral->id = substr(md5(Uuid::generate()->string), 0, 6);
