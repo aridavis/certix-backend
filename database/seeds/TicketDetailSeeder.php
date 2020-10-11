@@ -16,12 +16,13 @@ class TicketDetailSeeder extends Seeder
 
 
     private function initiateData(){
+        $id = \Webpatser\Uuid\Uuid::generate()->string;
         $data = [
-            "id" => \Webpatser\Uuid\Uuid::generate()->string,
+            "id" => $id,
             "ticket_id" => \App\Ticket::all()->first()->id,
             "isWatching" => 0,
-            "token" => NULL,
-            "cookie" => NULL,
+            "token" => substr(md5($id), 0, 6),
+            "cookie" => cookie('token', ''),
             "created_at" => \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now()
         ];

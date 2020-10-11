@@ -52,6 +52,8 @@ Route::middleware('auth:api')->group(function (){
         Route::post('/', 'WalletController@store');
     });
 
+    Route::get('/referral/all/{user_id}', 'ReferralController@getAllReferralProgression');
+
 });
 
 Route::prefix('auth')->group(function(){
