@@ -17,12 +17,39 @@ class DashboardController extends Controller
         return [
             "average_ratings" => $this->averageRating($request),
             "incoming_concert" => $this->incomingConcert($request),
-            "sold_ticket" => $this->ticketSold($request)
+            "sold_ticket" => $this->ticketSold($request),
+            "total_income" => $this->totalIncome($request),
+            "popular_genres" => $this->popularGenre($request),
+            "profit_genre" => $this->profitGenre($request),
+            "upcoming_sold_ticket" => $this->upcomingSoldTicket($request)
         ];
     }
 
-    public function totalIncome(Request $request){
+//    public function
 
+    public function upcomingSoldTicket(Request $request){
+        $query = "SELECT c.name, count(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."' and start_time > now() group by c.name";
+        return DB::select($query);
+    }
+
+
+    public function profitGenre(Request $request){
+        $query = "SELECT g.name, sum(price) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
+group by g.name";
+        return DB::select($query);
+
+    }
+
+    public function popularGenre(Request $request){
+        $query = "SELECT g.name, COUNT(*) as cnt FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
+group by g.name";
+        return DB::select($query);
+
+    }
+
+    public function totalIncome(Request $request){
+        $query = "SELECT sum(c.price) as price FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'";
+        return DB::select($query)[0]->price;
     }
 
     public function incomingConcert(Request $request){
