@@ -26,7 +26,13 @@ class ConcertController extends Controller
      */
     public function index(Request $request)
     {
-        return Concert::where('name', 'like', '%' . $request->keyword . '%')->where('start_time', '>', Carbon::now())->with('seller')->get();
+        $concert = new Concert();
+        $concert = $concert->newQuery();
+        if($request->has('keyword')){
+            $concert = $concert->where('name', 'like', '%' .  $request->keyword . '%')->where('start_time', '>', Carbon::now());
+        }
+
+        return $concert->with('seller')->get();
     }
 
     public function getUserHistory(Request $request)

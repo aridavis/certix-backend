@@ -60,7 +60,7 @@ class TicketController extends Controller
         $data->user_id = $request->user()->id;
         $data->concert_id = $request->concert_id;
         if($request->has('referral_id') && $request->referral_id != null){
-            if(Ticket::where('user_id', '=', $request->user()->id)->where('referral_id', '=', $request->referral_id)->first() == null){
+            if(Ticket::where('user_id', '=', $request->user()->id)->where('referral_id', '=', $request->referral_id)->first() != null){
                 return CustomResponse::ErrorResponse(['error' => ['Referral code is already used']]);
             }
             $data->referral_id = $request->referral_id;
