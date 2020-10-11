@@ -13,4 +13,8 @@ class Concert extends Model
     public static function findConcertById($id){
         return Concert::where("id", '=', $id)->first();
     }
+
+    public function genre(){
+        return $this->belongsTo(Genre::class);
+    }
 }
