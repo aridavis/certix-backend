@@ -26,11 +26,22 @@ class ReferralController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        $referral = Referral::where('id', '=', $request->referral_id)->first();
+        if($referral == null){
+            return CustomResponse::ErrorResponse(["not found", ["referral code not found"]]);
+        }else if($referral->concert_id != $request->concert_id){
+            return CustomResponse::ErrorResponse(["concert", ["wrong concert"]]);
+        }else if($referral->user_id == $request->user()->id){
+            return CustomResponse::ErrorResponse(["error", ["cannot use own referral code"]]);
+        }else{
+            if(Referral::getProgress($referral->id) >= 5){
+                return CustomResponse::ErrorResponse(["limit", ["limit exceeded"]]);
+            }
+            return $referral;
+        }
     }
-
 
     /**
      * Store a newly created resource in storage.
