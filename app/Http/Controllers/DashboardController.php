@@ -51,7 +51,6 @@ group by c.name";
         return DB::select($query);
     }
 
-
     public function profitGenre(Request $request){
         $query = "SELECT g.name, cast(sum(price) as int) as value FROM concerts c join tickets t on t.concert_id = c.id join ticket_details td on td.ticket_id = t.id join genres g on g.id = c.genre_id WHERE c.seller_id = '".Seller::findSellerByRequest($request)->id."'
 group by g.name";
