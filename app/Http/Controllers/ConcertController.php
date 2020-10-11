@@ -101,7 +101,7 @@ class ConcertController extends Controller
      */
     public function show($id)
     {
-        return Concert::find($id);
+        return Concert::with('genre')->find($id);
     }
 
 
