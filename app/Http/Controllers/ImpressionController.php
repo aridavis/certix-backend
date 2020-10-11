@@ -53,5 +53,14 @@ class ImpressionController extends Controller
                 $new_imp->save();
             }
         }
+        else{
+            $new_imp = new Impression();
+            $new_imp->id = Uuid::generate()->string;
+            $new_imp->ip_address = $request->getClientIp();
+            $new_imp->concert_id = $request->concert_id;
+            $new_imp->created_at = Carbon::now();
+            $new_imp->updated_at = Carbon::now();
+            $new_imp->save();
+        }
     }
 }
