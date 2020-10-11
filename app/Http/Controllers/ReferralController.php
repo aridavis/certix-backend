@@ -30,14 +30,14 @@ class ReferralController extends Controller
     {
         $referral = Referral::where('id', '=', $request->referral_id)->first();
         if($referral == null){
-            return CustomResponse::ErrorResponse(["error", ["Referral code not found"]]);
+            return CustomResponse::ErrorResponse(["error" => "Referral code not found"]);
         }else if($referral->concert_id != $request->concert_id){
-            return CustomResponse::ErrorResponse(["error", ["Cannot use on this concert"]]);
+            return CustomResponse::ErrorResponse(["error" => "Cannot use on this concert"]);
         }else if($referral->user_id == $request->user()->id){
-            return CustomResponse::ErrorResponse(["error", ["Cannot use own referral code"]]);
+            return CustomResponse::ErrorResponse(["error" => "Cannot use own referral code"]);
         }else{
             if(Referral::getProgress($referral->id) >= 5){
-                return CustomResponse::ErrorResponse(["error", ["Limit exceeded"]]);
+                return CustomResponse::ErrorResponse(["error" => "Limit exceeded"]);
             }
             return $referral;
         }
