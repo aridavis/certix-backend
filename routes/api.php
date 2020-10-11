@@ -56,7 +56,7 @@ Route::middleware('auth:api')->group(function (){
     Route::prefix('referral')->group(function(){
         Route::get('/all', 'ReferralController@getAllReferralProgression');
         Route::get('/{id}', 'ReferralController@show');
-        Route::get('/generate', 'ReferralController@store');
+        Route::post('/generate', 'ReferralController@store');
     });
 });
 

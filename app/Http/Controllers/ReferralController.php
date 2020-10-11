@@ -13,8 +13,8 @@ use Webpatser\Uuid\Uuid;
 class ReferralController extends Controller
 {
 
-    public function getAllReferralProgression(){
-        $referrals = Referral::with('concert')->where('user_id', '=', Auth::id());
+    public function getAllReferralProgression(Request $request){
+        $referrals = Referral::with('concert')->where('user_id', '=', $request->user()->id);
 
         foreach ($referrals as $ref){
             $ref->count = Referral::getProgress($ref->id);
@@ -31,15 +31,6 @@ class ReferralController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,11 +40,11 @@ class ReferralController extends Controller
      */
     public function store(Request $request)
     {
-        $referral = Referral::where('concert_id', '=', $request->concert_id)->where('user_id', '=', Auth::id())->first();
+        $referral = Referral::where('concert_id', '=', $request->concert_id)->where('user_id', '=', $request->user()->id)->first();
         if($referral == null){
             $referral = new Referral();
             $referral->id = substr(md5(Uuid::generate()->string), 0, 6);
-            $referral->user_id = $request->user_id;
+            $referral->user_id = $request->user()->id;
             $referral->concert_id = $request->concert_id;
             $referral->save();
         }
