@@ -14,14 +14,21 @@ class ReferralSeeder extends Seeder
         $this->initiateData();
     }
     private function initiateData(){
-        $data = [
-            "id" => substr(md5(\Webpatser\Uuid\Uuid::generate()->string), 0, 6),
-            "user_id" => \App\User::all()->first()->id,
-            "concert_id" => \App\Concert::all()->first()->id,
-            "created_at" => \Carbon\Carbon::now(),
-            "updated_at" => \Carbon\Carbon::now()
-        ];
+        $concerts = \App\Concert::all();
+        $users = \App\User::all();
 
-        \Illuminate\Support\Facades\DB::table("referrals")->insert($data);
+        for ($i = 0 ; $i < $concerts->count() ; $i++){
+            for ($j = 0; $j < $users->count() ; $j++){
+                $data = [
+                    "id" => substr(md5(\Webpatser\Uuid\Uuid::generate()->string), 0, 6),
+                    "user_id" => $users[$j]->id,
+                    "concert_id" => $concerts[$i]->id,
+                    "created_at" => \Carbon\Carbon::now(),
+                    "updated_at" => \Carbon\Carbon::now()
+                ];
+                \Illuminate\Support\Facades\DB::table("referrals")->insert($data);
+            }
+        }
+
     }
 }
