@@ -27,8 +27,10 @@ Route::middleware('auth:api')->group(function (){
     Route::prefix('sellers')->group(function (){
         Route::get('/', 'SellerController@index');
         Route::get('/sellings', 'SellerController@getSelling');
+        Route::get('/dashboard', 'DashboardController@index');
         Route::get('/{id}', 'SellerController@show');
         Route::put('/{id}', 'SellerController@update');
+
     });
 
     Route::prefix('concerts')->group(function(){
@@ -53,6 +55,11 @@ Route::middleware('auth:api')->group(function (){
         Route::post('/', 'WalletController@store');
     });
 
+    Route::prefix('referral')->group(function(){
+        Route::get('/all', 'ReferralController@getAllReferralProgression');
+        Route::get('/{id}', 'ReferralController@show');
+        Route::post('/generate', 'ReferralController@store');
+    });
 });
 
 Route::prefix('auth')->group(function(){
@@ -61,12 +68,6 @@ Route::prefix('auth')->group(function(){
 
 Route::prefix('users')->group(function(){
     Route::post('register', 'UserController@register');
-});
-
-Route::prefix('referral')->group(function(){
-    Route::get('/all/{user_id}', 'ReferralController@getAllReferralProgression');
-    Route::get('/{id}', 'ReferralController@show');
-    Route::post('/use-referral', 'ReferralController@useReferral');
 });
 
 Route::get('genres', 'GenreController@index');
