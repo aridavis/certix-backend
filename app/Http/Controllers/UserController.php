@@ -12,6 +12,11 @@ use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
 {
+
+    public function getProfile(Request $request){
+        return $request->user();
+    }
+
     public function register(Request $request){
         $validator = Validator::make($request->all(), [
             "name" => 'required|min:2',

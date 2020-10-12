@@ -44,6 +44,21 @@ class UserSeeder extends Seeder
 
         \Illuminate\Support\Facades\DB::table('users')->insert($data);
 
+
+        $data = [
+            "id" => \Webpatser\Uuid\Uuid::generate()->string,
+            "name" => 'Junaedi',
+            "password" => bcrypt("junaedi"),
+            "email" => "ju@ju.com",
+            "dob" => "2000-08-10",
+            "phone_number" => "082296516272",
+            "gender" => "M",
+            "created_at" => \Carbon\Carbon::now(),
+            "updated_at" => \Carbon\Carbon::now()
+        ];
+
+        \Illuminate\Support\Facades\DB::table('users')->insert($data);
+
         for($i = 0 ; $i < 100 ; $i++){
             $x = rand(0,1);
             $initial = $x == 0 ? "aa" : "kv";
